@@ -7,9 +7,9 @@
 char cd[] = "cd";
 char cwd[] = "pwd";
 char echo[] = "echo";
-char special_char_for_echo[] = "#";
-char special_char_for_echo1[] = "'";
-char special_char_for_echo2[] = " ";
+char special_char_for_echo[] = "-e";
+char special_char_for_echo1[] = "\n";
+char special_char_for_echo2[] = "\t";
 char ls[] = "ls";
 char path_forls[] = "";
 char Exit[] = "exit";
@@ -54,6 +54,28 @@ void printIt(char *checker, int start, int end){
     }
 }
 
+void helper_for_echo(char *String){
+    int flag1 = 0;
+    int count = 0;
+    for(int i = 0;String[i] != '\0';i++){
+        if(String[i] == '/'){
+            flag1 = 1;
+            count = i;
+        }else if(flag1 == 1 && count+1 == i){
+            if(String[i] == 'n'){
+                printf("\n");
+            }else if(String[i] == 't'){
+                printf("\t");
+            }else{
+                flag1 = 0;
+            }
+        }else{
+            flag1 = 0;
+            printf("%c",String[i]);
+        }
+    }
+}
+
 int main(){
 
     char *token, input_string[100], output_string[100], *checker, *temp,Helper_For_cd[100];
@@ -79,19 +101,19 @@ int main(){
         }else if(num == 2){
             printf("%s\n",getcwd(output_string,100));
         }else if(num == 3){
-            while(token != NULL){
-                if(!(strcmp(special_char_for_echo,token) == 0)){
-                printf("%s ",token);
-                token = strtok(NULL, " ");
+            
+                if((strcmp(special_char_for_echo,token) == 0)){
+                    token = strtok(NULL, " ");
+                    while(token != NULL){
+                        helper_for_echo(token);
+                        token = strtok(NULL, " ");
+                    }
                 }else{
-                    token = strtok(NULL," ");
-                    temp = token;
-                    start = get_index(temp,0);
-                    end = get_index(temp,start+1);
-                    printIt(temp, start, end);
-                    break;
+                    while(token != NULL){
+                        printf("%s ",token);
+                        token = strtok(NULL," ");}
                 }
-            }
+            
             printf("\n");
         }else if(num == 4){
             int a = 0;	
