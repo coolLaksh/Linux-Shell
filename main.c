@@ -3,24 +3,38 @@
 #include<unistd.h>
 #include<string.h>
 
+
 char cd[] = "cd";
-char pwd[] = "pwd";
+char cwd[] = "pwd";
 char echo[] = "echo";
 char special_char_for_echo[] = "#";
 char special_char_for_echo1[] = "'";
 char special_char_for_echo2[] = " ";
 char ls[] = "ls";
 char path_forls[] = "";
+char Exit[] = "exit";
+char Thread_Command[] = "&t";
+
+//Path for ls
+char *arg0 = "ls";
+char *arg1 = "/Assignment";
+char *arg2 = "/lakshyalodu";
+char *arg3 = "/home";
 
 int command_checker(char *checker){
     if(strcmp(checker,cd) == 0){
         return 1;
-    }else if(strcmp(checker,pwd) == 0){
+    }else if(strcmp(checker,cwd) == 0){
         return 2;
     }else if(strcmp(checker,echo) == 0){
         return 3;
     }else if(strcmp(checker,ls) == 0){
         return 4;
+    }else if(strcmp(checker,Thread_Command) == 0){
+    	return 9;
+    }
+    else if(strcmp(checker, Exit) == 0){
+    	return 17;
     }
 }
 
@@ -40,10 +54,9 @@ void printIt(char *checker, int start, int end){
     }
 }
 
-
 int main(){
 
-    char *token, input_string[100], output_string[100], *checker, *temp;
+    char *token, input_string[100], output_string[100], *checker, *temp,Helper_For_cd[100];
     int count, num, flag, start, end, space;
     while(1){
         count = 0, num= 0, flag = 0;
@@ -54,8 +67,15 @@ int main(){
         token = strtok(NULL," ");
         num = command_checker(checker);
         if(num == 1){
+            getcwd(Helper_For_cd, 100);
+        	
             chdir(token);
             token = strtok(NULL," ");
+            getcwd(output_string,100);
+            
+            if((strcmp(output_string,Helper_For_cd) == 0)){
+            	printf("\nInvalid Path...\n\n");
+            }
         }else if(num == 2){
             printf("%s\n",getcwd(output_string,100));
         }else if(num == 3){
@@ -74,18 +94,22 @@ int main(){
             }
             printf("\n");
         }else if(num == 4){
+            int a = 0;	
             pid_t t;
-            //t = fork();
+            t = fork();
             if(t == 0){
-                //execl("./ls.exe","Fun","Assignment2","Desktop","OneDrive","Lenovo","Users","C:",NULL);
+                execl("/home/lakshyalodu/Downloads/Assignment2/ls",arg0,arg1,arg2,arg3,(char *) NULL);
             }else if(t > 0){
-                //wait();
+                wait();
+           
             }    
+        }else if(num == 9){
+        	printf("Hello i am going to implement all commands by using threads.");
+        }else if(num == 17){
+        	break;
         }
     }
 
-
-    return 0;
 
     return 0;
 }
